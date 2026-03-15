@@ -1,0 +1,1280 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Apartment in Palma · Mallorca</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --sand: #f5f0e8;
+    --terracotta: #c4714a;
+    --terracotta-dark: #a85c38;
+    --sea: #3d7a8a;
+    --sea-light: #e8f2f4;
+    --night: #1a1a2e;
+    --text: #2c2c2c;
+    --muted: #888;
+    --white: #ffffff;
+    --shadow: 0 8px 40px rgba(0,0,0,0.08);
+    --radius: 16px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--sand);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ─── HEADER ─── */
+  .hero {
+    background: var(--night);
+    color: var(--white);
+    padding: 48px 32px 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 30% 60%, rgba(196,113,74,0.25) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 20%, rgba(61,122,138,0.2) 0%, transparent 50%);
+    pointer-events: none;
+  }
+  .hero-tag {
+    display: inline-block;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--terracotta);
+    margin-bottom: 12px;
+    font-weight: 500;
+  }
+  .hero h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(32px, 6vw, 52px);
+    font-weight: 300;
+    line-height: 1.1;
+    margin-bottom: 8px;
+  }
+  .hero h1 em { font-style: italic; color: var(--terracotta); }
+  .hero-sub {
+    font-size: 14px;
+    color: rgba(255,255,255,0.55);
+    margin-bottom: 28px;
+    letter-spacing: 0.3px;
+  }
+  .hero-chips {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .chip {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.12);
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.7);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .chip span { font-size: 14px; }
+
+  /* ─── LAYOUT ─── */
+  .container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 32px 20px 60px;
+  }
+
+  /* ─── TABS ─── */
+  .tabs {
+    display: flex;
+    gap: 4px;
+    background: rgba(0,0,0,0.06);
+    padding: 4px;
+    border-radius: 12px;
+    margin-bottom: 28px;
+    width: fit-content;
+  }
+  .tab-btn {
+    padding: 9px 20px;
+    border: none;
+    background: transparent;
+    border-radius: 9px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    color: var(--muted);
+    transition: all 0.2s;
+  }
+  .tab-btn.active {
+    background: var(--white);
+    color: var(--text);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* ─── CALENDAR ─── */
+  .calendar-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  .cal-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 400;
+    text-transform: capitalize;
+  }
+  .nav-btn {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    border: 1px solid rgba(0,0,0,0.12);
+    background: var(--white);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    transition: all 0.15s;
+    color: var(--text);
+  }
+  .nav-btn:hover { background: var(--night); color: var(--white); border-color: var(--night); }
+
+  .months-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+  @media (max-width: 600px) { .months-grid { grid-template-columns: 1fr; } }
+
+  .month-block { background: var(--white); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); }
+  .month-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 17px;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 14px;
+    text-transform: capitalize;
+  }
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+  .cal-dow {
+    text-align: center;
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--muted);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    padding-bottom: 6px;
+  }
+  .cal-day {
+    aspect-ratio: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 400;
+    cursor: default;
+    transition: all 0.15s;
+    position: relative;
+    user-select: none;
+  }
+  .cal-day.empty { background: transparent; }
+  .cal-day.past { color: #ccc; background: transparent; }
+  .cal-day.available {
+    background: #eaf5f0;
+    color: #2d7a5e;
+    font-weight: 500;
+  }
+  .cal-day.booked {
+    background: #fdecea;
+    color: #c0392b;
+    text-decoration: line-through;
+    opacity: 0.6;
+  }
+  .cal-day.checkin {
+    background: var(--sea);
+    color: var(--white);
+    font-weight: 600;
+    border-radius: 8px 0 0 8px;
+  }
+  .cal-day.checkout {
+    background: var(--sea);
+    color: var(--white);
+    font-weight: 600;
+    border-radius: 0 8px 8px 0;
+  }
+  .cal-day.inrange {
+    background: var(--sea-light);
+    color: var(--sea);
+    border-radius: 0;
+  }
+  .cal-day.today { outline: 2px solid var(--terracotta); outline-offset: -2px; }
+
+  /* ── GUEST SELECTION ── */
+  .cal-day.available { cursor: pointer; }
+  .cal-day.available:hover { background: #b7dccf; color: #1a5c42; transform: scale(1.08); z-index: 1; }
+  .cal-day.sel-start {
+    background: var(--terracotta) !important;
+    color: var(--white) !important;
+    font-weight: 700;
+    border-radius: 8px 0 0 8px;
+    cursor: pointer;
+  }
+  .cal-day.sel-end {
+    background: var(--terracotta) !important;
+    color: var(--white) !important;
+    font-weight: 700;
+    border-radius: 0 8px 8px 0;
+    cursor: pointer;
+  }
+  .cal-day.sel-range {
+    background: rgba(196,113,74,0.15) !important;
+    color: var(--terracotta) !important;
+    border-radius: 0;
+    cursor: pointer;
+  }
+  .cal-day.sel-start.sel-end { border-radius: 8px; }
+
+  /* ── COST SUMMARY ── */
+  .cost-summary {
+    background: var(--night);
+    border-radius: var(--radius);
+    padding: 22px 24px;
+    margin-top: 16px;
+    display: none;
+    animation: fadeUp 0.3s ease;
+  }
+  .cost-summary.visible { display: block; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .cost-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 7px 0;
+    font-size: 14px;
+    color: rgba(255,255,255,0.65);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+  }
+  .cost-row:last-of-type { border-bottom: none; }
+  .cost-total {
+    display: flex; justify-content: space-between; align-items: center;
+    padding-top: 12px; margin-top: 4px;
+    font-size: 18px; font-weight: 600;
+    color: var(--white);
+  }
+  .cost-total-num { color: var(--terracotta); font-family: 'Cormorant Garamond', serif; font-size: 26px; }
+  .cost-warning {
+    background: rgba(231,76,60,0.15);
+    border: 1px solid rgba(231,76,60,0.3);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 13px;
+    color: #ff8a80;
+    margin-bottom: 12px;
+  }
+  .cost-reset {
+    font-size: 11px;
+    color: rgba(255,255,255,0.3);
+    cursor: pointer;
+    text-decoration: underline;
+    margin-top: 6px;
+    display: inline-block;
+  }
+  .cost-reset:hover { color: rgba(255,255,255,0.6); }
+
+  /* price tooltip */
+  .day-price {
+    font-size: 8px;
+    color: inherit;
+    opacity: 0.75;
+    line-height: 1;
+    margin-top: 1px;
+  }
+
+  /* ─── LEGEND ─── */
+  .legend {
+    display: flex; gap: 16px; flex-wrap: wrap;
+    margin-top: 20px;
+    font-size: 12px; color: var(--muted);
+    align-items: center;
+  }
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+  .legend-dot {
+    width: 12px; height: 12px; border-radius: 3px;
+  }
+
+  /* ─── PRICE BANDS ─── */
+  .price-section {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 24px;
+    box-shadow: var(--shadow);
+    margin-top: 24px;
+  }
+  .price-section h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 19px;
+    font-weight: 400;
+    margin-bottom: 16px;
+  }
+  .price-bands {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+  }
+  .price-band {
+    border: 1.5px solid rgba(0,0,0,0.08);
+    border-radius: 12px;
+    padding: 14px 16px;
+    background: var(--sand);
+  }
+  .band-label { font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+  .band-price { font-size: 22px; font-weight: 500; color: var(--terracotta); }
+  .band-price span { font-size: 12px; color: var(--muted); font-weight: 400; }
+  .band-dates { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+  .cleaning-note {
+    margin-top: 14px;
+    font-size: 13px;
+    color: var(--muted);
+    background: var(--sea-light);
+    padding: 10px 14px;
+    border-radius: 8px;
+    border-left: 3px solid var(--sea);
+  }
+
+  /* ─── CTA ─── */
+  .cta-block {
+    background: var(--night);
+    border-radius: var(--radius);
+    padding: 28px 24px;
+    text-align: center;
+    margin-top: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .cta-block::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 50% 120%, rgba(196,113,74,0.3) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .cta-block p { color: rgba(255,255,255,0.6); font-size: 13px; margin-bottom: 16px; }
+  .cta-block .min-stay { color: rgba(255,255,255,0.4); font-size: 12px; margin-top: 10px; }
+  .btn-wa {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: #25D366;
+    color: var(--white);
+    padding: 14px 28px;
+    border-radius: 999px;
+    font-size: 15px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s;
+    box-shadow: 0 4px 20px rgba(37,211,102,0.3);
+  }
+  .btn-wa:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(37,211,102,0.4); }
+  .btn-wa svg { width: 20px; height: 20px; fill: currentColor; }
+
+  /* ─── ADMIN PANEL ─── */
+  .admin-header {
+    background: var(--night);
+    color: var(--white);
+    padding: 16px 20px;
+    border-radius: var(--radius);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+  }
+  .admin-badge {
+    background: var(--terracotta);
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+
+  .admin-section {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 24px;
+    box-shadow: var(--shadow);
+    margin-bottom: 20px;
+  }
+  .admin-section h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    font-weight: 400;
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* Price editor */
+  .price-editor { display: flex; flex-direction: column; gap: 12px; }
+  .price-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 120px 40px;
+    gap: 8px;
+    align-items: end;
+  }
+  @media (max-width: 500px) { .price-row { grid-template-columns: 1fr 1fr; } }
+
+  label { font-size: 12px; color: var(--muted); display: block; margin-bottom: 4px; font-weight: 500; }
+  input[type="date"], input[type="number"], input[type="text"] {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1.5px solid rgba(0,0,0,0.1);
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    background: var(--sand);
+    outline: none;
+    transition: border-color 0.15s;
+    color: var(--text);
+  }
+  input:focus { border-color: var(--terracotta); background: var(--white); }
+  input[type="number"] { -moz-appearance: textfield; }
+  input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+  .band-color-dot {
+    width: 12px; height: 12px; border-radius: 3px;
+    display: inline-block; margin-right: 6px;
+    vertical-align: middle;
+  }
+
+  /* Booking editor */
+  .booking-editor { display: flex; flex-direction: column; gap: 12px; }
+  .booking-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 40px;
+    gap: 8px;
+    align-items: end;
+  }
+  @media (max-width: 500px) { .booking-row { grid-template-columns: 1fr 1fr; } }
+
+  .btn-del {
+    width: 36px; height: 36px;
+    border: none;
+    background: #fdecea;
+    color: #c0392b;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s;
+  }
+  .btn-del:hover { background: #f5b7b1; }
+
+  .btn-add {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 16px;
+    background: var(--sand);
+    border: 1.5px dashed rgba(0,0,0,0.15);
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    color: var(--muted);
+    transition: all 0.15s;
+    width: fit-content;
+    margin-top: 4px;
+  }
+  .btn-add:hover { border-color: var(--terracotta); color: var(--terracotta); background: var(--white); }
+
+  .btn-save {
+    width: 100%;
+    padding: 14px;
+    background: var(--terracotta);
+    color: var(--white);
+    border: none;
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-top: 8px;
+  }
+  .btn-save:hover { background: var(--terracotta-dark); }
+
+  .save-confirm {
+    text-align: center;
+    font-size: 13px;
+    color: #2d7a5e;
+    margin-top: 10px;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .save-confirm.show { opacity: 1; }
+
+  /* ─── VALIDATION ─── */
+  .input-error {
+    border-color: #e74c3c !important;
+    background: #fff5f5 !important;
+  }
+  .booking-error-msg {
+    color: #e74c3c;
+    font-size: 11px;
+    margin-top: 3px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .btn-save:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+  }
+
+  /* ─── TOAST NOTIFICATION ─── */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--night);
+    color: var(--white);
+    padding: 14px 22px;
+    border-radius: 12px;
+    font-size: 14px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+    z-index: 9999;
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    max-width: 340px;
+    text-align: center;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+  .toast.error { border-left: 4px solid #e74c3c; }
+  .toast.warning { border-left: 4px solid #f39c12; }
+
+  /* Status bar */
+  .status-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+  .stat-card {
+    background: var(--sand);
+    border-radius: 10px;
+    padding: 14px;
+    text-align: center;
+  }
+  .stat-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--terracotta);
+  }
+  .stat-label { font-size: 11px; color: var(--muted); margin-top: 2px; }
+</style>
+</head>
+<body>
+
+<!-- Toast notification -->
+<div class="toast" id="toast"></div>
+
+<div class="hero">
+  <div class="hero-tag">Palma de Mallorca · Cas Capiscol</div>
+  <h1>Quiet neighbourhood — <em>close to everything</em></h1>
+  <p class="hero-sub">Spacious apartment for families · 10 min to beach · 10 min to Old Town · 12 min to airport</p>
+  <div class="hero-chips">
+    <div class="chip"><span>🛏</span> 3+ bedrooms</div>
+    <div class="chip"><span>👥</span> up to 6 guests</div>
+    <div class="chip"><span>🌊</span> 10–15 min to beach</div>
+    <div class="chip"><span>❄️</span> air conditioning</div>
+    <div class="chip"><span>🌿</span> terrace</div>
+    <div class="chip"><span>🚗</span> parking</div>
+    <div class="chip"><span>🛒</span> Carrefour nearby</div>
+    <div class="chip"><span>✈️</span> 12 min to airport</div>
+  </div>
+
+  <div style="margin-top:24px;display:flex;gap:28px;justify-content:center;flex-wrap:wrap;">
+    <div style="text-align:center;">
+      <div style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;color:var(--terracotta);line-height:1;">10 min</div>
+      <div style="font-size:11px;color:rgba(255,255,255,0.45);margin-top:3px;">to the beach</div>
+    </div>
+    <div style="width:1px;background:rgba(255,255,255,0.1);"></div>
+    <div style="text-align:center;">
+      <div style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;color:var(--terracotta);line-height:1;">10 min</div>
+      <div style="font-size:11px;color:rgba(255,255,255,0.45);margin-top:3px;">to Old Town</div>
+    </div>
+    <div style="width:1px;background:rgba(255,255,255,0.1);"></div>
+    <div style="text-align:center;">
+      <div style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;color:var(--terracotta);line-height:1;">12 min</div>
+      <div style="font-size:11px;color:rgba(255,255,255,0.45);margin-top:3px;">to the airport</div>
+    </div>
+    <div style="width:1px;background:rgba(255,255,255,0.1);"></div>
+    <div style="text-align:center;">
+      <div style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;color:var(--terracotta);line-height:1;">6</div>
+      <div style="font-size:11px;color:rgba(255,255,255,0.45);margin-top:3px;">guests</div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('guest')">📅 Availability</button>
+    <button class="tab-btn" id="adminTabBtn" onclick="unlockAdmin()" style="display:none">⚙️ Управление</button>
+  </div>
+
+  <!-- Скрытая кнопка входа в админку — тройной клик на копирайт внизу страницы -->
+  <!-- ════ GUEST VIEW ════ -->
+  <div id="tab-guest" class="tab-panel active">
+
+    <div style="background:var(--white);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);">
+      <div class="calendar-nav">
+        <button class="nav-btn" onclick="prevPair()">←</button>
+        <div class="cal-title" id="calRange"></div>
+        <button class="nav-btn" onclick="nextPair()">→</button>
+      </div>
+      <div class="months-grid" id="monthsGrid"></div>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#eaf5f0;border:1px solid #b7dccf"></div> Available</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#fdecea;border:1px solid #f5b7b1"></div> Booked</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--sea)"></div> Check-in / Check-out</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--sea-light);border:1px solid var(--sea)"></div> Stay period</div>
+      </div>
+    </div>
+
+    <div class="price-section">
+      <h3>💶 Rates by season</h3>
+      <div class="price-bands" id="priceBandsDisplay"></div>
+      <div class="cleaning-note">🧹 <strong>+€100</strong> — one-time cleaning fee after check-out (added to the total)</div>
+    </div>
+
+    <div class="price-section" style="margin-top:24px;">
+      <h3>📍 About the apartment</h3>
+      <p style="font-size:14px;line-height:1.7;color:var(--text);margin-bottom:14px;">
+        Spacious apartment in the quiet residential neighbourhood of Cas Capiscol, northern Palma — a perfect base for families or groups of up to 6. Away from noisy tourist zones, but only a short drive from the beach, the historic city centre and the airport.
+      </p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div style="background:var(--sand);border-radius:10px;padding:12px 14px;font-size:13px;">
+          <div style="font-weight:500;margin-bottom:6px;color:var(--sea);">🌊 Beaches</div>
+          <div style="color:var(--muted);line-height:1.6;">Can Pere Antoni ≈ 10 min<br>Cala Major ≈ 15 min</div>
+        </div>
+        <div style="background:var(--sand);border-radius:10px;padding:12px 14px;font-size:13px;">
+          <div style="font-weight:500;margin-bottom:6px;color:var(--sea);">🏛 City</div>
+          <div style="color:var(--muted);line-height:1.6;">Old Town ≈ 10 min<br>La Seu Cathedral ≈ 10 min</div>
+        </div>
+        <div style="background:var(--sand);border-radius:10px;padding:12px 14px;font-size:13px;">
+          <div style="font-weight:500;margin-bottom:6px;color:var(--sea);">🛒 Nearby</div>
+          <div style="color:var(--muted);line-height:1.6;">Carrefour · Mercadona<br>Ocimax · Leroy Merlin</div>
+        </div>
+        <div style="background:var(--sand);border-radius:10px;padding:12px 14px;font-size:13px;">
+          <div style="font-weight:500;margin-bottom:6px;color:var(--sea);">✈️ Getting around</div>
+          <div style="color:var(--muted);line-height:1.6;">Airport ≈ 12 min<br>Parking included</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cta-block">
+      <p>Check availability and rates — contact us directly. <strong style="color:var(--white)">Minimum stay: 3 nights.</strong></p>
+      <a class="btn-wa" id="waLink" href="https://wa.me/420775017371" target="_blank">
+        <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Message on WhatsApp
+      </a>
+    </div>
+
+    <!-- COST SUMMARY -->
+    <div class="cost-summary" id="costSummary">
+      <div id="costWarning" class="cost-warning" style="display:none">
+        ⚠️ Minimum stay is <strong>3 nights</strong>. Please select a longer period.
+      </div>
+      <div id="costRows"></div>
+      <div class="cost-total">
+        <span>Total</span>
+        <span class="cost-total-num" id="costTotal">€0</span>
+      </div>
+      <div style="margin-top:16px;text-align:center;">
+        <a class="btn-wa" id="waLinkCalc" href="https://wa.me/420775017371" target="_blank" style="display:inline-flex;">
+          <svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Book via WhatsApp
+        </a>
+        <br><span class="cost-reset" onclick="resetSelection()">✕ Clear selection</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ════ ADMIN VIEW ════ -->
+  <div id="tab-admin" class="tab-panel">
+
+    <div class="admin-header">
+      <span class="admin-badge">Admin</span>
+      <span>Панель управления · Апартаменты Пальма</span>
+    </div>
+
+    <!-- Stats -->
+    <div class="admin-section">
+      <h3>📊 Статистика</h3>
+      <div class="status-grid">
+        <div class="stat-card">
+          <div class="stat-num" id="statBookings">0</div>
+          <div class="stat-label">Бронирований</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num" id="statNights">0</div>
+          <div class="stat-label">Занятых ночей</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num" id="statRevenue">€0</div>
+          <div class="stat-label">Ожидаемый доход</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bookings -->
+    <div class="admin-section">
+      <h3>🗓 Бронирования</h3>
+      <div class="booking-editor" id="bookingEditor"></div>
+      <button class="btn-add" onclick="addBooking()">+ Добавить бронирование</button>
+    </div>
+
+    <!-- Price bands -->
+    <div class="admin-section">
+      <h3>💶 Цены по сезонам</h3>
+      <div class="price-editor" id="priceEditor"></div>
+      <button class="btn-add" onclick="addPriceBand()">+ Добавить период</button>
+    </div>
+
+    <button class="btn-save" onclick="saveAll()">💾 Сохранить все изменения</button>
+    <div class="save-confirm" id="saveConfirm">✅ Изменения сохранены! Перезагрузите страницу, чтобы увидеть обновлённый календарь.</div>
+
+  </div>
+
+</div><!-- /container -->
+
+<!-- Скрытый вход в админку -->
+<div style="text-align:center;padding:24px 0 16px;font-size:11px;color:#bbb;">
+  <span id="adminTrigger" onclick="adminTriggerClick()" style="cursor:default;user-select:none;">© Holiday Mallorca · Palma de Mallorca</span>
+</div>
+
+<script>
+// ─── STATE ───────────────────────────────────────────────────────────────────
+
+let state = JSON.parse(localStorage.getItem('mallorca_state') || 'null') || {
+  priceBands: [
+    { label: 'Low season',     from: '2025-10-01', to: '2025-12-20', price: 120, color: '#b8d4e8' },
+    { label: 'New Year',       from: '2025-12-21', to: '2026-01-07', price: 200, color: '#f5c26b' },
+    { label: 'Winter / Spring',from: '2026-01-08', to: '2026-05-31', price: 130, color: '#c8e6c9' },
+    { label: 'High season',    from: '2026-06-01', to: '2026-09-30', price: 220, color: '#ef9a9a' },
+    { label: 'Autumn 2026',    from: '2026-10-01', to: '2026-12-20', price: 130, color: '#b8d4e8' },
+  ],
+  bookings: [
+    { checkin: '2026-04-10', checkout: '2026-04-17', guest: 'Иван Петров' },
+    { checkin: '2026-07-01', checkout: '2026-07-14', guest: 'Familie Müller' },
+  ]
+};
+
+let currentPairStart = new Date(); // first displayed month
+
+// ─── GUEST SELECTION STATE ────────────────────────────────────────────────────
+let selStart = null; // Date
+let selEnd   = null; // Date
+
+function resetSelection() {
+  selStart = null;
+  selEnd   = null;
+  document.getElementById('costSummary').classList.remove('visible');
+  renderCalendar();
+}
+
+function isDateBooked(date) {
+  for (const b of state.bookings) {
+    const ci = new Date(b.checkin); ci.setHours(0,0,0,0);
+    const co = new Date(b.checkout); co.setHours(0,0,0,0);
+    if (date >= ci && date < co) return true;
+  }
+  return false;
+}
+
+function hasBookedDayInRange(from, to) {
+  const d = new Date(from);
+  while (d < to) {
+    if (isDateBooked(d)) return true;
+    d.setDate(d.getDate() + 1);
+  }
+  return false;
+}
+
+function onDayClick(date) {
+  // Ignore booked / past days
+  const today = new Date(); today.setHours(0,0,0,0);
+  if (date < today) return;
+  const status = getDayStatus(date);
+  if (status.type === 'checkin' || status.type === 'checkout' || status.type === 'inrange' || status.type === 'booked') return;
+
+  if (!selStart || (selStart && selEnd)) {
+    // First click — set start
+    selStart = date;
+    selEnd   = null;
+  } else {
+    // Second click — set end
+    if (date <= selStart) {
+      selStart = date;
+      selEnd   = null;
+    } else {
+      // Check no booked days in between
+      if (hasBookedDayInRange(selStart, date)) {
+        showToast('⚠️ Selected range includes booked dates', 'error');
+        selStart = null; selEnd = null;
+      } else {
+        selEnd = date;
+        updateCostSummary();
+      }
+    }
+  }
+  renderCalendar();
+}
+
+function updateCostSummary() {
+  if (!selStart || !selEnd) return;
+  const nights = Math.round((selEnd - selStart) / 86400000);
+  const summary = document.getElementById('costSummary');
+  const rows    = document.getElementById('costRows');
+  const warning = document.getElementById('costWarning');
+  const total   = document.getElementById('costTotal');
+  const waBtn   = document.getElementById('waLinkCalc');
+
+  summary.classList.add('visible');
+  rows.innerHTML = '';
+
+  // Format dates
+  const fmtD = d => d.toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+
+  // Add check-in / check-out row
+  rows.innerHTML += `<div class="cost-row"><span>📅 Check-in</span><span>${fmtD(selStart)}</span></div>`;
+  rows.innerHTML += `<div class="cost-row"><span>📅 Check-out</span><span>${fmtD(selEnd)}</span></div>`;
+  rows.innerHTML += `<div class="cost-row"><span>🌙 Nights</span><span>${nights}</span></div>`;
+
+  if (nights < MIN_NIGHTS) {
+    warning.style.display = 'block';
+    rows.innerHTML += `<div class="cost-row" style="opacity:0.4"><span>Accommodation</span><span>—</span></div>`;
+    rows.innerHTML += `<div class="cost-row" style="opacity:0.4"><span>🧹 Cleaning fee</span><span>—</span></div>`;
+    total.textContent = '—';
+    waBtn.href = 'https://wa.me/420775017371';
+    return;
+  }
+
+  warning.style.display = 'none';
+
+  // Calculate per-night cost (may span multiple price bands)
+  let accomCost = 0;
+  const bandBreakdown = {}; // price -> nights count
+  for (let i = 0; i < nights; i++) {
+    const d = new Date(selStart); d.setDate(d.getDate() + i);
+    const p = getPriceForDate(d) || 0;
+    accomCost += p;
+    bandBreakdown[p] = (bandBreakdown[p] || 0) + 1;
+  }
+
+  Object.entries(bandBreakdown).forEach(([price, n]) => {
+    const p = Number(price);
+    rows.innerHTML += `<div class="cost-row"><span>🏠 ${n} night${n>1?'s':''} × €${p}/night</span><span>€${n * p}</span></div>`;
+  });
+  rows.innerHTML += `<div class="cost-row"><span>🧹 Cleaning fee</span><span>€100</span></div>`;
+
+  const grandTotal = accomCost + 100;
+  total.textContent = '€' + grandTotal.toLocaleString();
+
+  // Build WhatsApp message
+  const msg = encodeURIComponent(
+    `Hello! I'd like to book the apartment in Palma.\n\n` +
+    `Check-in: ${fmtD(selStart)}\nCheck-out: ${fmtD(selEnd)}\nNights: ${nights}\n\nEstimated total: €${grandTotal} (incl. €100 cleaning fee)\n\nPlease confirm availability.`
+  );
+  waBtn.href = `https://wa.me/420775017371?text=${msg}`;
+}
+
+// ─── TABS ────────────────────────────────────────────────────────────────────
+function switchTab(tab) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  if (tab === 'guest') document.querySelector('.tab-btn:first-child').classList.add('active');
+  if (tab === 'admin') renderAdminPanel();
+  if (tab === 'guest') renderCalendar();
+}
+
+// ─── CALENDAR ────────────────────────────────────────────────────────────────
+function prevPair() {
+  currentPairStart = new Date(currentPairStart.getFullYear(), currentPairStart.getMonth() - 2, 1);
+  renderCalendar();
+}
+function nextPair() {
+  currentPairStart = new Date(currentPairStart.getFullYear(), currentPairStart.getMonth() + 2, 1);
+  renderCalendar();
+}
+
+function renderCalendar() {
+  const grid = document.getElementById('monthsGrid');
+  const rangeEl = document.getElementById('calRange');
+  grid.innerHTML = '';
+
+  const m0 = new Date(currentPairStart.getFullYear(), currentPairStart.getMonth(), 1);
+  const m1 = new Date(currentPairStart.getFullYear(), currentPairStart.getMonth() + 1, 1);
+  const months = [m0, m1];
+
+  const fmt = (d) => d.toLocaleString('en-GB', { month: 'long', year: 'numeric' });
+  rangeEl.textContent = fmt(m0) + ' — ' + fmt(m1);
+
+  months.forEach(m => {
+    grid.appendChild(buildMonth(m));
+  });
+
+  renderPriceBandsDisplay();
+  updateStats();
+}
+
+function buildMonth(date) {
+  const block = document.createElement('div');
+  block.className = 'month-block';
+
+  const name = document.createElement('div');
+  name.className = 'month-name';
+  name.textContent = date.toLocaleString('en-GB', { month: 'long', year: 'numeric' });
+  block.appendChild(name);
+
+  const calGrid = document.createElement('div');
+  calGrid.className = 'cal-grid';
+
+  const dows = ['Mo','Tu','We','Th','Fr','Sa','Su'];
+  dows.forEach(d => {
+    const el = document.createElement('div');
+    el.className = 'cal-dow';
+    el.textContent = d;
+    calGrid.appendChild(el);
+  });
+
+  // first day offset (Mon=0)
+  const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+  let offset = firstDay.getDay() - 1;
+  if (offset < 0) offset = 6;
+
+  for (let i = 0; i < offset; i++) {
+    const el = document.createElement('div');
+    el.className = 'cal-day empty';
+    calGrid.appendChild(el);
+  }
+
+  const daysInMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+  const today = new Date(); today.setHours(0,0,0,0);
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const dayDate = new Date(date.getFullYear(), date.getMonth(), d);
+    const el = document.createElement('div');
+    el.className = 'cal-day';
+
+    if (dayDate < today) {
+      el.classList.add('past');
+    } else {
+      const status = getDayStatus(dayDate);
+
+      // Guest selection highlighting (overrides booked status visually for selection)
+      if (selStart && !selEnd && dayDate.getTime() === selStart.getTime()) {
+        el.classList.add('sel-start');
+      } else if (selStart && selEnd) {
+        if (dayDate.getTime() === selStart.getTime()) el.classList.add('sel-start');
+        else if (dayDate.getTime() === selEnd.getTime()) el.classList.add('sel-end');
+        else if (dayDate > selStart && dayDate < selEnd) el.classList.add('sel-range');
+        else el.classList.add(status.type);
+      } else {
+        el.classList.add(status.type);
+      }
+
+      if (status.price && !el.classList.contains('sel-start') && !el.classList.contains('sel-end') && !el.classList.contains('sel-range')) {
+        const priceEl = document.createElement('div');
+        priceEl.className = 'day-price';
+        priceEl.textContent = '€' + status.price;
+        el.appendChild(priceEl);
+      }
+
+      // Clickable only for available days
+      if (status.type === 'available' || el.classList.contains('sel-start') || el.classList.contains('sel-range')) {
+        el.addEventListener('click', () => onDayClick(new Date(date.getFullYear(), date.getMonth(), d)));
+      }
+    }
+    if (dayDate.toDateString() === today.toDateString()) el.classList.add('today');
+
+    const numEl = document.createElement('div');
+    numEl.textContent = d;
+    el.insertBefore(numEl, el.firstChild);
+    calGrid.appendChild(el);
+  }
+
+  block.appendChild(calGrid);
+  return block;
+}
+
+function getDayStatus(date) {
+  const ds = toStr(date);
+
+  // check bookings
+  for (const b of state.bookings) {
+    const ci = new Date(b.checkin);
+    const co = new Date(b.checkout);
+    ci.setHours(0,0,0,0); co.setHours(0,0,0,0);
+
+    if (date.getTime() === ci.getTime()) return { type: 'checkin' };
+    if (date.getTime() === co.getTime()) return { type: 'checkout' };
+    if (date > ci && date < co) return { type: 'inrange' };
+  }
+
+  // check price band -> available
+  const price = getPriceForDate(date);
+  if (price) return { type: 'available', price };
+
+  return { type: '' };
+}
+
+function getPriceForDate(date) {
+  for (const b of state.priceBands) {
+    const from = new Date(b.from); from.setHours(0,0,0,0);
+    const to   = new Date(b.to);   to.setHours(23,59,59,999);
+    if (date >= from && date <= to) return b.price;
+  }
+  return null;
+}
+
+function toStr(d) {
+  return d.toISOString().split('T')[0];
+}
+
+// ─── PRICE BANDS DISPLAY ─────────────────────────────────────────────────────
+function renderPriceBandsDisplay() {
+  const el = document.getElementById('priceBandsDisplay');
+  el.innerHTML = '';
+  state.priceBands.forEach(b => {
+    const div = document.createElement('div');
+    div.className = 'price-band';
+    div.innerHTML = `
+      <div class="band-label"><span class="band-color-dot" style="background:${b.color}"></span>${b.label}</div>
+      <div class="band-price">€${b.price} <span>/ night</span></div>
+      <div class="band-dates">${formatDate(b.from)} — ${formatDate(b.to)}</div>
+    `;
+    el.appendChild(div);
+  });
+}
+
+function formatDate(str) {
+  const d = new Date(str);
+  return d.toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+// ─── STATS ───────────────────────────────────────────────────────────────────
+function updateStats() {
+  let nights = 0, revenue = 0;
+  state.bookings.forEach(b => {
+    const ci = new Date(b.checkin), co = new Date(b.checkout);
+    const n = Math.round((co - ci) / 86400000);
+    nights += n;
+    // estimate revenue
+    let r = 0;
+    for (let i = 0; i < n; i++) {
+      const d = new Date(ci); d.setDate(d.getDate() + i);
+      r += getPriceForDate(d) || 0;
+    }
+    r += 100; // cleaning
+    revenue += r;
+  });
+  document.getElementById('statBookings').textContent = state.bookings.length;
+  document.getElementById('statNights').textContent = nights;
+  document.getElementById('statRevenue').textContent = '€' + revenue.toLocaleString();
+}
+
+// ─── TOAST ───────────────────────────────────────────────────────────────────
+function showToast(msg, type = 'warning') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast ' + type;
+  t.classList.add('show');
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(() => t.classList.remove('show'), 4000);
+}
+
+// ─── MIN NIGHTS CHECK ────────────────────────────────────────────────────────
+const MIN_NIGHTS = 3;
+
+function getNights(checkin, checkout) {
+  if (!checkin || !checkout) return 0;
+  const ci = new Date(checkin), co = new Date(checkout);
+  return Math.round((co - ci) / 86400000);
+}
+
+function validateBookings() {
+  let valid = true;
+  state.bookings.forEach((b, i) => {
+    const nights = getNights(b.checkin, b.checkout);
+    const ciInput = document.querySelector(`#bookingEditor .booking-row:nth-child(${i+1}) input[type=date]:first-of-type`);
+    const coInput = document.querySelector(`#bookingEditor .booking-row:nth-child(${i+1}) input[type=date]:last-of-type`);
+    const errEl = document.getElementById(`booking-err-${i}`);
+    if (b.checkin && b.checkout && nights < MIN_NIGHTS) {
+      if (coInput) coInput.classList.add('input-error');
+      if (errEl) errEl.textContent = `⚠️ Минимум ${MIN_NIGHTS} ночи (сейчас: ${nights})`;
+      valid = false;
+    } else {
+      if (coInput) coInput.classList.remove('input-error');
+      if (errEl) errEl.textContent = '';
+    }
+  });
+  document.querySelector('.btn-save').disabled = !valid;
+  return valid;
+}
+
+// ─── ADMIN PANEL ─────────────────────────────────────────────────────────────
+function renderAdminPanel() {
+  renderBookingEditor();
+  renderPriceEditor();
+  updateStats();
+}
+
+function renderBookingEditor() {
+  const el = document.getElementById('bookingEditor');
+  el.innerHTML = '';
+  state.bookings.forEach((b, i) => {
+    const nights = getNights(b.checkin, b.checkout);
+    const tooShort = b.checkin && b.checkout && nights < MIN_NIGHTS;
+    const row = document.createElement('div');
+    row.innerHTML = `
+      <div class="booking-row">
+        <div>
+          <label>Заезд</label>
+          <input type="date" value="${b.checkin}" onchange="state.bookings[${i}].checkin=this.value; validateBookings();">
+        </div>
+        <div>
+          <label>Выезд</label>
+          <input type="date" value="${b.checkout}" class="${tooShort ? 'input-error' : ''}" onchange="state.bookings[${i}].checkout=this.value; validateBookings();">
+        </div>
+        <div>
+          <label>Гость</label>
+          <input type="text" value="${b.guest}" placeholder="Имя / контакт" onchange="state.bookings[${i}].guest=this.value">
+        </div>
+        <div style="display:flex;align-items:flex-end">
+          <button class="btn-del" onclick="removeBooking(${i})" title="Удалить">✕</button>
+        </div>
+      </div>
+      <div class="booking-error-msg" id="booking-err-${i}">${tooShort ? `⚠️ Минимум ${MIN_NIGHTS} ночи (сейчас: ${nights})` : ''}</div>
+    `;
+    el.appendChild(row);
+  });
+  validateBookings();
+}
+
+function addBooking() {
+  state.bookings.push({ checkin: '', checkout: '', guest: '' });
+  renderBookingEditor();
+}
+function removeBooking(i) {
+  state.bookings.splice(i, 1);
+  renderBookingEditor();
+  updateStats();
+}
+
+function renderPriceEditor() {
+  const el = document.getElementById('priceEditor');
+  el.innerHTML = '';
+  state.priceBands.forEach((b, i) => {
+    const row = document.createElement('div');
+    row.className = 'price-row';
+    row.innerHTML = `
+      <div>
+        <label>Период (с)</label>
+        <input type="date" value="${b.from}" onchange="state.priceBands[${i}].from=this.value">
+      </div>
+      <div>
+        <label>Период (по)</label>
+        <input type="date" value="${b.to}" onchange="state.priceBands[${i}].to=this.value">
+      </div>
+      <div>
+        <label>€ / ночь</label>
+        <input type="number" value="${b.price}" min="0" onchange="state.priceBands[${i}].price=Number(this.value)">
+      </div>
+      <div style="display:flex;align-items:flex-end">
+        <button class="btn-del" onclick="removeBand(${i})" title="Удалить">✕</button>
+      </div>
+    `;
+    el.appendChild(row);
+  });
+}
+
+function addPriceBand() {
+  state.priceBands.push({ label: 'Новый период', from: '', to: '', price: 150, color: '#d0d0d0' });
+  renderPriceEditor();
+}
+function removeBand(i) {
+  state.priceBands.splice(i, 1);
+  renderPriceEditor();
+}
+
+function saveAll() {
+  if (!validateBookings()) {
+    showToast('⚠️ Исправьте ошибки — минимум 3 ночи для каждого бронирования', 'error');
+    return;
+  }
+  localStorage.setItem('mallorca_state', JSON.stringify(state));
+  const c = document.getElementById('saveConfirm');
+  c.classList.add('show');
+  renderCalendar();
+  renderPriceBandsDisplay();
+  showToast('✅ Изменения сохранены!', '');
+  setTimeout(() => c.classList.remove('show'), 4000);
+}
+
+// ─── ADMIN LOCK ──────────────────────────────────────────────────────────────
+const ADMIN_PASSWORD = 'mallorca2026';
+let triggerClicks = 0;
+let triggerTimer = null;
+
+function adminTriggerClick() {
+  triggerClicks++;
+  clearTimeout(triggerTimer);
+  triggerTimer = setTimeout(() => { triggerClicks = 0; }, 2000);
+
+  if (triggerClicks >= 5) {
+    triggerClicks = 0;
+    const pwd = prompt('Введите пароль:');
+    if (pwd === ADMIN_PASSWORD) {
+      document.getElementById('adminTabBtn').style.display = '';
+      showToast('🔓 Панель управления разблокирована', '');
+    } else if (pwd !== null) {
+      showToast('❌ Неверный пароль', 'error');
+    }
+  }
+}
+
+function unlockAdmin() {
+  switchTab('admin');
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('adminTabBtn').classList.add('active');
+}
+
+// ─── INIT ────────────────────────────────────────────────────────────────────
+currentPairStart = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+renderCalendar();
+</script>
+</body>
+</html>
